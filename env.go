@@ -2,7 +2,6 @@ package env
 
 import (
 	"log"
-	"os"
 
 	"github.com/gomodule/redigo/redis"
 )
@@ -14,19 +13,11 @@ type Env struct {
 
 // New returns a new Env.
 func New() *Env {
-	addr := func() string {
-		val, ok := os.LookupEnv("REDIS_ADDRESS")
-		if !ok {
-			return "0.0.0.0:6379"
-		}
-		return val
-	}
-
 	return &Env{
 		// Pool maintains a pool of connections.
 		Pool: &redis.Pool{
 			Dial: func() (redis.Conn, error) {
-				conn, err := redis.Dial("tcp", addr())
+				conn, err := redis.Dial("tcp", tierAddr())
 				if err != nil {
 					log.Fatalf("env.New redis.Dial %w", err)
 				}
